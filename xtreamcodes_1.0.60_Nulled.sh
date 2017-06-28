@@ -1,274 +1,441 @@
 #!/bin/bash
-
-# FUNCTION: Ubuntu 14.04 Check
-distro(){
-if [ -f /etc/lsb-release ]; then
-    . /etc/lsb-release
-        if [ $DISTRIB_ID == Ubuntu ]; then
-            if [ $DISTRIB_RELEASE != "14.04" ]; then
-                error
-            fi
-        else
-            error
-        fi
+echo " "
+jeshile='\e[40;38;5;82m' #jeshile
+jo='\e[0m' # pa ngjyra
+os=$(exec uname -m|grep 64)
+if [ "$os" = "" ]
+then os="x86"
+else os="x64"
 fi
-}
-
-# FUNCTION: ERROR
-error(){
-    sleep 2
-    echo -ne '\n'"--PROBLEM!--"
-    echo -ne '\n'"Support: https://github.com/zgelici/FOS-Streaming-v1" '\n'
-exit
-}
-
-
-# FUNCTION: FOS-Streaming Exist
-fosstreamingexist() {
-    if [ -d "/home/fos-streaming" ]; then
-      echo -ne '\n'"You have already installed fos streaming before?"
-      echo "If you want remove fos-streaming"
-      echo "killall -9 nginx php-fpm"
-      echo  "userdel fosstreaming"
-      echo "rm -r /home/fos-streaming"
-      exit
-    fi
-}
-
-# FUNCTION: Packages Install
-packages_install(){
-    apt-get update >/dev/null 2>&1
-    apt-get install -y --force-yes git >/dev/null 2>&1
-    apt-get install -y --force-yes php5-cli curl >/dev/null 2>&1
-    apt-get install -y --force-yes libxml2-dev  > /dev/null 2>&1
-    apt-get install -y --force-yes libbz2-dev  > /dev/null 2>&1
-    apt-get install -y --force-yes libcurl4-openssl-dev   > /dev/null 2>&1
-    apt-get install -y --force-yes libmcrypt-dev  > /dev/null 2>&1
-    apt-get install -y --force-yes libmhash2 > /dev/null 2>&1
-    apt-get install -y --force-yes libmhash-dev  > /dev/null 2>&1
-    apt-get install -y --force-yes libpcre3  > /dev/null 2>&1
-    apt-get install -y --force-yes libpcre3-dev  > /dev/null 2>&1
-    apt-get install -y --force-yes make  > /dev/null 2>&1
-    apt-get install -y --force-yes build-essential  > /dev/null 2>&1
-    apt-get install -y --force-yes libxslt1-dev git > /dev/null 2>&1
-    apt-get install -y --force-yes libssl-dev > /dev/null 2>&1
-    apt-get install -y --force-yes git > /dev/null 2>&1
-    apt-get install -y --force-yes php5  > /dev/null 2>&1
-    apt-get install -y --force-yes unzip > /dev/null 2>&1
-    apt-get install -y --force-yes python-software-properties > /dev/null 2>&1
-    apt-get install -y --force-yes libpopt0 > /dev/null 2>&1
-    apt-get install -y --force-yes libpq-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libpq5 > /dev/null 2>&1
-    apt-get install -y --force-yes libpspell-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libpthread-stubs0-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libpython-stdlib > /dev/null 2>&1
-    apt-get install -y --force-yes libqdbm-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libqdbm14 > /dev/null 2>&1
-    apt-get install -y --force-yes libquadmath0 > /dev/null 2>&1
-    apt-get install -y --force-yes librecode-dev > /dev/null 2>&1
-    apt-get install -y --force-yes librecode0 > /dev/null 2>&1
-    apt-get install -y --force-yes librtmp-dev > /dev/null 2>&1
-    apt-get install -y --force-yes librtmp0 > /dev/null 2>&1
-    apt-get install -y --force-yes libsasl2-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsasl2-modules > /dev/null 2>&1
-    apt-get install -y --force-yes libsctp-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsctp1 > /dev/null 2>&1
-    apt-get install -y --force-yes libsensors4 > /dev/null 2>&1
-    apt-get install -y --force-yes libsensors4-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsm-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsm6 > /dev/null 2>&1
-    apt-get install -y --force-yes libsnmp-base > /dev/null 2>&1
-    apt-get install -y --force-yes libsnmp-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsnmp-perl > /dev/null 2>&1
-    apt-get install -y --force-yes libsnmp30 > /dev/null 2>&1
-    apt-get install -y --force-yes libsqlite3-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libssh2-1 > /dev/null 2>&1
-    apt-get install -y --force-yes libssh2-1-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libssl-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libstdc++-4.8-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libstdc++6-4.7-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libsybdb5 > /dev/null 2>&1
-    apt-get install -y --force-yes libtasn1-3-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libtasn1-6-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libterm-readkey-perl > /dev/null 2>&1
-    apt-get install -y --force-yes libtidy-0.99-0 > /dev/null 2>&1
-    apt-get install -y --force-yes libtidy-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libtiff5 > /dev/null 2>&1
-    apt-get install -y --force-yes libtiff5-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libtiffxx5 > /dev/null 2>&1
-    apt-get install -y --force-yes libtimedate-perl > /dev/null 2>&1
-    apt-get install -y --force-yes libtinfo-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libtool > /dev/null 2>&1
-    apt-get install -y --force-yes libtsan0 > /dev/null 2>&1
-    apt-get install -y --force-yes libunistring0 > /dev/null 2>&1
-    apt-get install -y --force-yes libvpx-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libvpx1 > /dev/null 2>&1
-    apt-get install -y --force-yes libwrap0-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libx11-6 > /dev/null 2>&1
-    apt-get install -y --force-yes libx11-data > /dev/null 2>&1
-    apt-get install -y --force-yes libx11-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxau-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxau6 > /dev/null 2>&1
-    apt-get install -y --force-yes libxcb1 > /dev/null 2>&1
-    apt-get install -y --force-yes libxcb1-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxdmcp-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxdmcp6 > /dev/null 2>&1
-    apt-get install -y --force-yes libxml2 > /dev/null 2>&1
-    apt-get install -y --force-yes libxml2-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxmltok1 > /dev/null 2>&1
-    apt-get install -y --force-yes libxmltok1-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxpm-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxpm4 > /dev/null 2>&1
-    apt-get install -y --force-yes libxslt1-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxslt1.1 > /dev/null 2>&1
-    apt-get install -y --force-yes libxt-dev > /dev/null 2>&1
-    apt-get install -y --force-yes libxt6 > /dev/null 2>&1
-    apt-get install -y --force-yes linux-libc-dev > /dev/null 2>&1
-    apt-get install -y --force-yes m4 > /dev/null 2>&1
-    apt-get install -y --force-yes make > /dev/null 2>&1
-    apt-get install -y --force-yes man-db > /dev/null 2>&1
-    apt-get install -y --force-yes netcat-openbsd > /dev/null 2>&1
-    apt-get install -y --force-yes odbcinst1debian2 > /dev/null 2>&1
-    apt-get install -y --force-yes openssl > /dev/null 2>&1
-    apt-get install -y --force-yes patch > /dev/null 2>&1
-    apt-get install -y --force-yes pkg-config > /dev/null 2>&1
-    apt-get install -y --force-yes po-debconf > /dev/null 2>&1
-    apt-get install -y --force-yes python > /dev/null 2>&1
-    apt-get install -y --force-yes python-minimal > /dev/null 2>&1
-    apt-get install -y --force-yes python2.7 > /dev/null 2>&1
-    apt-get install -y --force-yes python2.7-minimal > /dev/null 2>&1
-    apt-get install -y --force-yes re2c > /dev/null 2>&1
-    apt-get install -y --force-yes unixodbc > /dev/null 2>&1
-    apt-get install -y --force-yes unixodbc-dev > /dev/null 2>&1
-    apt-get install -y --force-yes uuid-dev > /dev/null 2>&1
-    apt-get install -y --force-yes x11-common > /dev/null 2>&1
-    apt-get install -y --force-yes x11proto-core-dev > /dev/null 2>&1
-    apt-get install -y --force-yes x11proto-input-dev > /dev/null 2>&1
-    apt-get install -y --force-yes x11proto-kb-dev > /dev/null 2>&1
-    apt-get install -y --force-yes xorg-sgml-doctools > /dev/null 2>&1
-    apt-get install -y --force-yes libjpeg8 > /dev/null 2>&1
-    apt-get install -y --force-yes xtrans-dev > /dev/null 2>&1
-    apt-get install -y --force-yes zlib1g-dev > /dev/null 2>&1
-    apt-get install -y --force-yes php5-fpm  > /dev/null 2>&1
-    apt-get install -y --force-yes libgtk2.0-0 libgdk-pixbuf2.0-0 libfontconfig1 libxrender1 libx11-6 libglib2.0-0  libxft2 libfreetype6 libc6 zlib1g libpng12-0 libstdc++6-4.8-dbg-arm64-cross libgcc1  > /dev/null 2>&1
-    }
-    ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so.6.11.1 /usr/lib/libfreetype.so.6
-    fos_install(){
-    /usr/sbin/useradd -s /sbin/nologin -U -d /home/fos-streaming -m fosstreaming > /dev/null
-    cd /home/fos-streaming > /dev/null
-    wget http://fos-streaming.com/fos-streaming_unpack_x84_64.tar.gz -O /home/fos-streaming/fos-streaming_unpack_x84_64.tar.gz  > /dev/null 2>&1
-    tar -xzf /home/fos-streaming/fos-streaming_unpack_x84_64.tar.gz -C /home/fos-streaming/
-    rm -rf /home/fos-streaming/fos/www/vendor /home/fos-streaming/fos/www/50x.html > /dev/null 2>&1
-    cd /home/fos-streaming/fos/www  > /dev/null 2>&1
-    git clone https://github.com/zgelici/FOS-Streaming-v1.git  > /dev/null 2>&1
-    cp -R /home/fos-streaming/fos/www/FOS-Streaming-v1/* /home/fos-streaming/fos/www/  > /dev/null 2>&1
-
-    echo 'www-data ALL = (root) NOPASSWD: /usr/local/bin/ffmpeg' >> /etc/sudoers  > /dev/null 2>&1
-    echo 'www-data ALL = (root) NOPASSWD: /usr/local/bin/ffprobe' >> /etc/sudoers  > /dev/null 2>&1
-    echo '*/2 * * * * www-data /home/fos-streaming/fos/php/bin/php /home/fos-streaming/fos/www/cron.php' >> /etc/crontab  > /dev/null 2>&1
-
-    sed --in-place '/exit 0/d' /etc/rc.local > /dev/null 2>&1
-    echo 'sleep 10' >> /etc/rc.local > /dev/null 2>&1
-    echo '/home/fos-streaming/fos/nginx/sbin/nginx_fos' >> /etc/rc.local > /dev/null 2>&1
-    echo '/home/fos-streaming/fos/php/sbin/php-fpm' >> /etc/rc.local > /dev/null 2>&1
-    echo 'exit 0' >> /etc/rc.local > /dev/null 2>&1
-
-    /bin/mkdir /home/fos-streaming/fos/www/hl  > /dev/null 2>&1
-    chmod -R 777 /home/fos-streaming/fos/www/hl  > /dev/null 2>&1
-    /bin/mkdir /home/fos-streaming/fos/www/cache  > /dev/null 2>&1
-    chmod -R 777 /home/fos-streaming/fos/www/cache  > /dev/null 2>&1
-    chown www-data:www-data /home/fos-streaming/fos/nginx/conf  > /dev/null 2>&1
-
-    /bin/cp improvement/nginx.conf /home/fos-streaming/fos/nginx/conf/nginx.conf
-    /bin/cp improvement/php-fpm.conf /home/fos-streaming/fos/php/etc/php-fpm.conf
-    /bin/cp improvement/www.conf /home/fos-streaming/fos/php/etc/pool.d/www.conf
-    /bin/cp improvement/balance.conf /home/fos-streaming/fos/nginx/conf/balance.conf
-
-}
-
-startfos(){
-    /home/fos-streaming/fos/php/sbin/php-fpm
-    /home/fos-streaming/fos/nginx/sbin/nginx_fos
-    sleep 3
-    curl "http://127.0.0.1:7777/install_database_tables.php?install"
-    curl "http://127.0.0.1:7777/install_database_tables.php?update"
-    rm -r /home/fos-streaming/fos/www/install_database_tables.php
-}
-
-ffmpeg()
-{
-    wget http://johnvansickle.com/ffmpeg/releases/ffmpeg-release-64bit-static.tar.xz -O /home/fos-streaming/ffmpeg-release-64bit-static.tar.xz  > /dev/null 2>&1
-    tar -xJf /home/fos-streaming/ffmpeg-release-64bit-static.tar.xz -C /tmp/ > /dev/null 2>&1
-    /bin/cp /tmp/ffmpeg*/ffmpeg  /usr/local/bin/ffmpeg
-    /bin/cp /tmp/ffmpeg*/ffprobe /usr/local/bin/ffprobe
-    chmod 755 /usr/local/bin/ffmpeg  > /dev/null 2>&1
-    chmod 755 /usr/local/bin/ffprobe  > /dev/null 2>&1
-    chown www-data:root /usr/local/nginx/html  > /dev/null 2>&1
-}
-foswebport-streamport()
-{
-    /bin/mkdir /home/fos-streaming/fos/www1/
-    /bin/mkdir /home/fos-streaming/fos/www1/log/
-    chown fosstreaming:fosstreaming /home/fos-streaming/fos/www1/log/
-    /bin/cp -R /home/fos-streaming/fos/www/* /home/fos-streaming/fos/www1/
-    /bin/rm /home/fos-streaming/fos/www1/*.*
-    /bin/rm -rf /home/fos-streaming/fos/www1/hl
-    /bin/ln -s /home/fos-streaming/fos/www/hl /home/fos-streaming/fos/www1/hl
-    /bin/ln -s /home/fos-streaming/fos/www/config.php /home/fos-streaming/fos/www1/config.php
-    /bin/ln -s /home/fos-streaming/fos/www/functions.php /home/fos-streaming/fos/www1/functions.php
-    /bin/ln -s /home/fos-streaming/fos/www/stream.php /home/fos-streaming/fos/www1/stream.php
-    /bin/ln -s /home/fos-streaming/fos/www/playlist.php /home/fos-streaming/fos/www1/playlist.php
- }   
-info(){
- echo "********************************************************************************************;
-    echo "FOS-Streaming installed.. \n";
-    echo "streaming port   page: 'http://host:8000' \n";
-    echo "visit management page: 'http://host:7777' \n";
-    echo "Login: \n";
-    echo "Username: admin \n";
-    echo "Password: admin \n";
-    echo "database details: \n";
-    echo  "hostname: localhost, database_name: " $1 " , database_username: "  $2  " , database_password " $3
-    echo "IMPORTANT: After you logged in, go to settings and check your ip-address. \n";
-    echo "*****************************************************************************************;
-}
-
-database(){
-
-echo ""
-read -p "Choose your MySQL database name: " sqldatabase
-read -p "Enter your MySQL username(usual 'root'): " sqluname
-read -rep $'Enter your MySQL password (ENTER for none):' sqlpasswd
-echo "mysql-server mysql-server/root_password password $sqlpasswd" | debconf-set-selections
-echo "mysql-server mysql-server/root_password_again password $sqlpasswd" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/dbconfig-install boolean true" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/app-password-confirm password $sqlpasswd" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/admin-pass password $sqlpasswd" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/mysql/app-pass password $sqlpasswd" | debconf-set-selections
-echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect none" | debconf-set-selections
-
-apt-get install -y mysql-server > /dev/null 2>&1
-apt-get install -y php5-mysql  > /dev/null 2>&1
-
-mysql -uroot -p$sqlpasswd -e "CREATE DATABASE $sqldatabase"
-mysql -uroot -p$sqlpasswd -e "grant all privileges on $sqldatabase.* to '$sqluname'@'localhost' identified by '$sqlpasswd'"
-
-
-sed -i 's/xxx/'$sqldatabase'/g' /home/fos-streaming/fos/www/config.php
-sed -i 's/zzz/'$sqlpasswd'/g' /home/fos-streaming/fos/www/config.php
-sed -i 's/ttt/'$sqluname'/g' /home/fos-streaming/fos/www/config.php
-
-}
-
-echo "FOS-Streaming is installing, you need to wait till the installation gets finished"
-
-fosstreamingexist
-distro
-packages_install
-fos_install
-database
-ffmpeg
-startfos
-#test
-foswebport-streamport
-info
+echo -e "${jeshile} ┌───────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Checking System Version  │ \e[0m"
+echo -e "${jeshile} └───────────────────────────┘ \e[0m"
+sleep 3
+echo -e "${jeshile} ┌───────────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Detected a $os System   │ \e[0m"
+echo -e "${jeshile} └───────────────────────────┘ \e[0m"
+sleep 3
+echo -e "${jeshile} ┌───────────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Installing Web Server   │ \e[0m"
+echo -e "${jeshile} └───────────────────────────┘ \e[0m"
+echo " "
+apt-get update && apt-get upgrade -y && apt-get install htop -y
+apt-get install lsb-release nscd curl php5 php5-mysql php5-cli php5-curl unzip curl libcurl3 libcurl3-dev php5-curl -y
+sudo apt-get update && sudo apt-get install vlc vlc-plugin-* -y && sudo apt-get install vlc browser-plugin-vlc -y
+sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O /usr/local/bin/youtube-dl && chmod a+rx /usr/local/bin/youtube-dl
+sudo updatedb
+sudo apt-get update
+sudo apt-get install php5-dev php5-gd -y
+apt-get install php5-geoip php5-fpm mcrypt php5-mcrypt php5enmod mcrypt -y
+apt-get install apache2 apache2-mpm-prefork apache2-utils libapache2-mod-php5 libapr1 libaprutil1 libdbd-mysql-perl libdbi-perl libnet-daemon-perl libplrpc-perl libpq5 mysql-client-5.5 mysql-common mysql-server mysql-server-5.5 php5-common php5-mysql -y
+apt-get install phpmyadmin -y
+sudo php5enmod mcrypt
+service apache2 reload && service apache2 restart
+echo " "
+echo -e "${jeshile} ┌────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Enable IP Forwarding Tables  │ \e[0m"
+echo -e "${jeshile} └────────────────────────────────┘ \e[0m"
+echo " "
+# BLOCK THE MOTHERFUCKER
+echo 1 > /proc/sys/net/ipv4/ip_forward
+sudo sysctl -w net.ipv4.ip_forward=1
+sudo sysctl -p /etc/sysctl.conf
+sysctl net.ipv4.ip_forward
+echo " "
+echo -e "${jeshile} ┌─────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │    Blocking IP FORWARD Tables   │ \e[0m"
+echo -e "${jeshile} └─────────────────────────────────┘ \e[0m"
+echo " "
+/sbin/iptables -t nat -I OUTPUT --dest 149.202.206.51/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 62.210.244.112/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest xtream-codes.com/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 119.249.54.71/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 38.30.65.218/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 221.194.47.224/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 218.65.30.38/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 116.31.116.34/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 91.197.232.109/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 121.18.238.104/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 221.194.44.195/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 123.103.255.80/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 185.73.239.0/28 -j DNAT --to-destination 127.0.0.1
+/sbin/iptables -t nat -I OUTPUT --dest 185.73.239.7/28 -j DNAT --to-destination 127.0.0.1
+echo " "
+echo -e "${jeshile} ┌─────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Blocking SSH Connection   │ \e[0m"
+echo -e "${jeshile} └─────────────────────────────┘ \e[0m"
+echo " "
+sudo /sbin/iptables -I INPUT -s 119.249.54.71 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 119.249.54.71 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 38.30.65.218 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 221.194.47.224 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 218.65.30.38 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 116.31.116.34 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 91.197.232.109 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 121.18.238.104 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 221.194.44.195 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 149.202.206.51 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 123.103.255.80 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 123.103.255.87 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 62.210.244.112 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.0 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.7 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s xtream-codes.com -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.20.86.174 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 149.202.206.51 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 54.208.22.70 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 51.206.202.149 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.7 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 94.23.120.89 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.18.44.225 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 46.4.28.40 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 108.162.196.124 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 91.228.53.61 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.17 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.236.54 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.2 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.3 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.4 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.5 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.6 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.7 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.8 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.9 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.10 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.11 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.12 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.13 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.14 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.15 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.16 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.17 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.18 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.19 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.20 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.21 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.22 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.23 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.24 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 202.12.28.140 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 192.5.4.1 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 199.212.0.53 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 200.3.13.14 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 193.0.9.5 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.236.54 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.28.18.95 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 94.23.120.89 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport ssh -j REJECT
+sudo /sbin/iptables-save
+echo " "
+echo -e "${jeshile} ┌─────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Blocking FTP Connection   │ \e[0m"
+echo -e "${jeshile} └─────────────────────────────┘ \e[0m"
+echo " "
+sudo /sbin/iptables -I INPUT -s 119.249.54.71 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 38.30.65.218 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 221.194.47.224 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 218.65.30.38 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 116.31.116.34 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 91.197.232.109 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 121.18.238.104 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 221.194.44.195 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 149.202.206.51 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 123.103.255.80 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 123.103.255.87 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 62.210.244.112 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.0 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.7 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s xtream-codes.com -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.20.86.174 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 54.208.22.70 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 51.206.202.149 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.7 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 94.23.120.89 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.18.44.225 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 46.4.28.40 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 108.162.196.124 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 91.228.53.61 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.239.17 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.236.54 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.2  -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.3 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.4 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.5 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.6 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.7 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.8 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.9 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.10 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.11 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.12 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.13 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.14 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.15 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.16 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.17 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.18 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.19 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.20 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.21 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.22 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.23 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.49.91.24 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 202.12.28.140 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 192.5.4.1 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 199.212.0.53 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 200.3.13.14 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 193.0.9.5 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 185.73.236.54 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 104.28.18.95 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 94.23.120.89 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables -I INPUT -s 37.59.239.66 -p tcp --dport 21 -j REJECT
+sudo /sbin/iptables-save
+echo " "
+echo -e "${jeshile} ┌─────────────────────┐ \e[0m"
+echo -e "${jeshile} │   Blocking TUNTAP   │ \e[0m"
+echo -e "${jeshile} └─────────────────────┘ \e[0m"
+echo " "
+sudo ip tuntap add tun0 mode tun
+sudo sudo ip addr add 119.249.54.71/28 dev tun0
+sudo ip addr add 38.30.65.218/28 dev tun0
+sudo ip addr add 221.194.47.224/28 dev tun0
+sudo ip addr add 218.65.30.38/28 dev tun0
+sudo ip addr add 116.31.116.34/28 dev tun0
+sudo ip addr add 91.197.232.109/28 dev tun0
+sudo ip addr add 121.18.238.104/28 dev tun0
+sudo ip addr add 221.194.44.195/28 dev tun0
+sudo ip addr add 123.103.255.80/28 dev tun0
+sudo ip addr add 185.73.239.0/28 dev tun0
+sudo ip addr add 185.73.239.7/28 dev tun0
+sudo ip addr add 119.249.54.71 dev tun0
+sudo ip addr add 119.249.54.71 dev tun0
+sudo ip addr add 38.30.65.218 dev tun0
+sudo ip addr add 221.194.47.224 dev tun0
+sudo ip addr add 218.65.30.38 dev tun0
+sudo ip addr add 116.31.116.34 dev tun0
+sudo ip addr add 91.197.232.109 dev tun0
+sudo ip addr add 121.18.238.104 dev tun0
+sudo ip addr add 221.194.44.195 dev tun0
+sudo ip addr add 149.202.206.51 dev tun0
+sudo ip addr add 123.103.255.80 dev tun0
+sudo ip addr add 123.103.255.87 dev tun0
+sudo ip addr add 62.210.244.112 dev tun0
+sudo ip addr add 185.73.239.0 dev tun0
+sudo ip addr add 185.73.239.7 dev tun0
+sudo ip addr add 104.20.86.174 dev tun0
+sudo ip addr add 149.202.206.51 dev tun0
+sudo ip addr add 54.208.22.70 dev tun0
+sudo ip addr add 51.206.202.149 dev tun0
+sudo ip addr add 185.73.239.7 dev tun0
+sudo ip addr add 94.23.120.89 dev tun0
+sudo ip addr add 104.18.44.225 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 46.4.28.40 dev tun0
+sudo ip addr add 108.162.196.124 dev tun0
+sudo ip addr add 91.228.53.61 dev tun0
+sudo ip addr add 185.73.239.17 dev tun0
+sudo ip addr add 185.73.236.54 dev tun0
+sudo ip addr add 185.49.91.2 dev tun0
+sudo ip addr add 185.49.91.3 dev tun0
+sudo ip addr add 185.49.91.4 dev tun0
+sudo ip addr add 185.49.91.5 dev tun0
+sudo ip addr add 185.49.91.6 dev tun0
+sudo ip addr add 185.49.91.7 dev tun0
+sudo ip addr add 185.49.91.8 dev tun0
+sudo ip addr add 185.49.91.9 dev tun0
+sudo ip addr add 185.49.91.10 dev tun0
+sudo ip addr add 185.49.91.11 dev tun0
+sudo ip addr add 185.49.91.12 dev tun0
+sudo ip addr add 185.49.91.13 dev tun0
+sudo ip addr add 185.49.91.14 dev tun0
+sudo ip addr add 185.49.91.15 dev tun0
+sudo ip addr add 185.49.91.16 dev tun0
+sudo ip addr add 185.49.91.17 dev tun0
+sudo ip addr add 185.49.91.18 dev tun0
+sudo ip addr add 185.49.91.19 dev tun0
+sudo ip addr add 185.49.91.20 dev tun0
+sudo ip addr add 185.49.91.21 dev tun0
+sudo ip addr add 185.49.91.22 dev tun0
+sudo ip addr add 185.49.91.23 dev tun0
+sudo ip addr add 185.49.91.24 dev tun0
+sudo ip addr add 202.12.28.140 dev tun0
+sudo ip addr add 192.5.4.1 dev tun0
+sudo ip addr add 199.212.0.53 dev tun0
+sudo ip addr add 200.3.13.14 dev tun0
+sudo ip addr add 193.0.9.5 dev tun0
+sudo ip addr add 185.73.236.54 dev tun0
+sudo ip addr add 104.28.18.95 dev tun0
+sudo ip addr add 94.23.120.89 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 119.249.54.71 dev tun0
+sudo ip addr add 38.30.65.218 dev tun0
+sudo ip addr add 221.194.47.224 dev tun0
+sudo ip addr add 218.65.30.38 dev tun0
+sudo ip addr add 116.31.116.34 dev tun0
+sudo ip addr add 91.197.232.109 dev tun0
+sudo ip addr add 121.18.238.104 dev tun0
+sudo ip addr add 221.194.44.195 dev tun0
+sudo ip addr add 149.202.206.51 dev tun0
+sudo ip addr add 123.103.255.80 dev tun0
+sudo ip addr add 123.103.255.87 dev tun0
+sudo ip addr add 62.210.244.112 dev tun0
+sudo ip addr add 185.73.239.0 dev tun0
+sudo ip addr add 185.73.239.7 dev tun0
+sudo ip addr add 104.20.86.174 dev tun0
+sudo ip addr add 54.208.22.70 dev tun0
+sudo ip addr add 51.206.202.149 dev tun0
+sudo ip addr add 185.73.239.7 dev tun0
+sudo ip addr add 94.23.120.89 dev tun0
+sudo ip addr add 104.18.44.225 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 46.4.28.40 dev tun0
+sudo ip addr add 108.162.196.124 dev tun0
+sudo ip addr add 91.228.53.61 dev tun0
+sudo ip addr add 185.73.239.17 dev tun0
+sudo ip addr add 185.73.236.54 dev tun0
+sudo ip addr add 185.49.91.2  dev tun0
+sudo ip addr add 185.49.91.3 dev tun0
+sudo ip addr add 185.49.91.4 dev tun0
+sudo ip addr add 185.49.91.5 dev tun0
+sudo ip addr add 185.49.91.6 dev tun0
+sudo ip addr add 185.49.91.7 dev tun0
+sudo ip addr add 185.49.91.8 dev tun0
+sudo ip addr add 185.49.91.9 dev tun0
+sudo ip addr add 185.49.91.10 dev tun0
+sudo ip addr add 185.49.91.11 dev tun0
+sudo ip addr add 185.49.91.12 dev tun0
+sudo ip addr add 185.49.91.13 dev tun0
+sudo ip addr add 185.49.91.14 dev tun0
+sudo ip addr add 185.49.91.15 dev tun0
+sudo ip addr add 185.49.91.16 dev tun0
+sudo ip addr add 185.49.91.17 dev tun0
+sudo ip addr add 185.49.91.18 dev tun0
+sudo ip addr add 185.49.91.19 dev tun0
+sudo ip addr add 185.49.91.20 dev tun0
+sudo ip addr add 185.49.91.21 dev tun0
+sudo ip addr add 185.49.91.22 dev tun0
+sudo ip addr add 185.49.91.23 dev tun0
+sudo ip addr add 185.49.91.24 dev tun0
+sudo ip addr add 202.12.28.140 dev tun0
+sudo ip addr add 192.5.4.1 dev tun0
+sudo ip addr add 199.212.0.53 dev tun0
+sudo ip addr add 200.3.13.14 dev tun0
+sudo ip addr add 193.0.9.5 dev tun0
+sudo ip addr add 185.73.236.54 dev tun0
+sudo ip addr add 104.28.18.95 dev tun0
+sudo ip addr add 94.23.120.89 dev tun0
+sudo ip addr add 37.59.239.66 dev tun0
+sudo ip addr add 149.202.206.48 dev tun0
+sudo ip addr add 185.73.239.7 dev tun0
+sudo ip addr add 149.202.206.51 dev tun0
+sudo ip addr add 62.210.244.122 dev tun0
+sudo ip addr add 123.103.255.87 dev tun0
+sudo ip addr add 185.135.158.190 dev tun0
+sudo ip addr add 116.31.116.34 dev tun0
+sudo ip addr add 119.249.54.71 dev tun0
+sudo ip addr add 38.30.65.218 dev tun0
+sudo ip addr add 221.194.47.224 dev tun0
+sudo ip addr add 121.18.238.104 dev tun0
+sudo ip addr add 221.194.44.195 dev tun0
+sudo ip addr add 218.65.30.38 dev tun0
+sudo ip addr add 91.197.232.109 dev tun0
+sudo ip addr add 185.73.239.0 dev tun0
+sudo ip addr add 62.210.244.122 dev tun0
+sudo ip addr add 123.103.255.80 dev tun0
+sudo ip addr add 104.20.86.174 dev tun0
+echo " "
+echo -e "${jeshile} ┌────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  install Iptables Persistent And Open VPN  │ \e[0m"
+echo -e "${jeshile} └────────────────────────────────────────────┘ \e[0m"
+echo " "
+sudo apt-get install iptables-persistent && apt-get install openvpn -y
+echo " "
+echo -e "${jeshile} ┌──────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Downloanding Extracting And Installing  │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────┘ \e[0m"
+echo " "
+#mkdir /var/www/html
+#cd /var/www/html #DESTINACIONI KRYESOR ADMIN - TEMPLATES ETC
+cd /var/www/html && wget http://downloads.sourceforge.net/project/iptv-md/xtream/Xtream_Codes_v1.0.60_Nulled.zip && unzip Xtream_Codes_v1.0.60_Nulled.zip && cp /var/www/html/downloads/iptv_panel_pro.zip /tmp && chmod a+x /tmp/iptv_panel_pro.zip && cp /var/www/html/downloads/install_iptv_pro.php /root/ && cd /root && chmod a+x /root/install_iptv_pro.php && php install_iptv_pro.php
+chmod 775 /var/www/html/Xtream_Codes_v1.0.60_Nulled.zip
+rm /var/www/html/Xtream_Codes_v1.0.60_Nulled.zip
+cp /var/www/html/downloads/iptv_panel_pro.zip /tmp
+chmod a+x /tmp/iptv_panel_pro.zip
+#cp /var/www/html/downloads/install_iptv_pro.php /root/ #FSHIHET AUTOMATIKISHT MBAS INSTALIMIT
+#cd /root
+#chmod a+x /root/install_iptv_pro.php
+#php install_iptv_pro.php  #KJO ESHTE LULKUQJA
+echo " "
+#REPLACE CONFIG, ALL ORIGINAL FILES ARE BACKUP WITH END backup_by_TRC4
+echo -e "${jeshile} ┌─────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Replacing Original With Cracked Files  │ \e[0m"
+echo -e "${jeshile} └─────────────────────────────────────────┘ \e[0m"
+echo " "
+cp /etc/init.d/xtreamcodes_pro_panel /etc/init.d/xtreamcodes_pro_panel_backup_by_TRC4
+echo -e "${jeshile} [+] /etc/init.d/xtreamcodes_pro_panel Backup as xtreamcodes_pro_panel_backup_by_TRC4 \e[0m"
+cp /var/www/html/crack/xtreamcodes_pro_panel /etc/init.d/xtreamcodes_pro_panel
+echo -e "${jeshile} [+] New xtreamcodes_pro_panel File Coppied to /etc/init.d/xtreamcodes_pro \e[0m"
+cp /etc/rc.local /etc/rc.local_backup_by_TRC4
+echo -e "${jeshile} [+] /etc/rc.local backuped as rc.local_backup_by_TRC4 \e[0m"
+cp /var/www/html/crack/rc.local /etc/rc.local
+echo -e "${jeshile} [+] New rc.local File Coppied to /etc/rc.local \e[0m"
+chmod +x /etc/rc.local
+echo -e "${jeshile} [+] chmod +x rc.local \e[0m"
+echo " "
+#MYSQL CONFIG, ALL ORIGINAL FILES ARE BACKUP WITH END backup_by_TRC4
+echo -e "${jeshile} ┌──────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Modified MYSQL Connections  │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────┘ \e[0m"
+echo " "
+cp /etc/mysql/my.cnf /etc/mysql/my_config.cnf_backup_by_TRC4
+echo -e "${jeshile} [+] /etc/mysql/my.cnf backuped as my.cnf_backup_by_TRC4 \e[0m"
+echo -e "${jeshile} [+] ORIGINAL FILE /var/www/html/crack/mysqlcnf/original \e[0m"
+sed -i 's/max_connections = 5000/max_connections = 20000/g' /etc/mysql/my.cnf
+echo -e "${jeshile} [+] MYSQL Connections Has Been Now Modified Minimum 5000 to Maximum 20000 \e[0m"
+service mysql restart
+echo " "
+echo -e "${jeshile} ┌───────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Removing TEMP Files  │ \e[0m"
+echo -e "${jeshile} └───────────────────────┘ \e[0m"
+echo " "
+rm /root/install_iptv_pro.php
+rm /root/xtreamcodes_1.0.60_Nulled.sh
+echo " "
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Xtream Fuckers 10.60 Nulled By Albanian Crackers (TRC4) │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] installation Completed                                │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] Email: TRC4@USA.COM                                   │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] Webpage: Albdroid.AL                                  │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] Source: Kodi.AL                                       │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] Location: Albania,Greece,Italy,Rotterdam              │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+] Happy Streaming Gangsters ;-)                         │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo -e "${jeshile} ┌──────────────────────────────────────────────────────────┐ \e[0m"
+echo -e "${jeshile} │[+]        Serveri Do Te Behet Automatic Reboot           │ \e[0m"
+echo -e "${jeshile} └──────────────────────────────────────────────────────────┘ \e[0m"
+echo " "
+sleep 8
+reboot
+echo " "
+echo -e "${jeshile} ┌───────────────────────┐ \e[0m"
+echo -e "${jeshile} │[R]  Rebooting VPS...  │ \e[0m"
+echo -e "${jeshile} └───────────────────────┘ \e[0m"
+echo " "
