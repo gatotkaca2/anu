@@ -7,7 +7,9 @@ if [ "$os" = "" ]
 then os="x86"
 else os="x64"
 fi
-echo " 
+echo -e "${jeshile} ┌───────────────────────────┐ \e[0m"
+echo -e "${jeshile} │  Checking System Version  │ \e[0m"
+echo -e "${jeshile} └───────────────────────────┘ \e[0m"
 sleep 3
 echo -e "${jeshile} ┌───────────────────────────┐ \e[0m"
 echo -e "${jeshile} │   Detected a $os System   │ \e[0m"
